@@ -1,53 +1,134 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bống ơi, anh yêu em nhiều lắm</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fff0f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    h1 {
-      color: #e75480;
-    }
-    input[type="password"] {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1px solid pink;
-      margin-bottom: 20px;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #e75480;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bống ơi, anh yêu em nhiều lắm</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #f5c6e0, #fff0f5);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    margin: 0; padding: 0;
+  }
+  header {
+    background: #ff8fc3;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    font-weight: 700;
+    font-size: 2em;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 8px rgba(255, 143, 195, 0.5);
+  }
+  #loginSection {
+    margin: 40px auto;
+    max-width: 400px;
+    text-align: center;
+  }
+  #loginSection input[type="password"] {
+    padding: 12px 20px;
+    font-size: 1em;
+    border-radius: 25px;
+    border: 2px solid #ff8fc3;
+    outline: none;
+    width: 80%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+  }
+  #loginSection input[type="password"]:focus {
+    border-color: #ff4da6;
+  }
+  #loginSection button {
+    margin-top: 15px;
+    padding: 12px 30px;
+    border: none;
+    background: #ff4da6;
+    color: white;
+    font-weight: 600;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  #loginSection button:hover {
+    background: #ff1a75;
+  }
+  #content {
+    display: none;
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+  }
+  #content h2 {
+    color: #d6336c;
+    margin-bottom: 20px;
+  }
+  #content img {
+    max-width: 90%;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(255, 143, 195, 0.5);
+    margin-bottom: 20px;
+  }
+  #content video {
+    max-width: 90%;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(255, 143, 195, 0.5);
+    margin-bottom: 20px;
+  }
+  footer {
+    text-align: center;
+    color: #ff4da6;
+    font-weight: 600;
+    padding: 20px;
+    margin-top: 50px;
+  }
+</style>
 </head>
 <body>
-  <h1>Nhập mật khẩu để xem điều đặc biệt 💖</h1>
-  <input type="password" id="password" placeholder="Nhập mật khẩu..." />
-  <button onclick="checkPassword()">Vào xem</button>
 
-  <script>
-    function checkPassword() {
-      var pw = document.getElementById("password").value;
-      if (pw === "trongleyeuboongsu") {
-        window.location.href = "memory.html";
-      } else {
-        alert("Sai mật khẩu rồi Bống ơi 😢");
-      }
+<header>
+  Bống ơi, anh yêu em nhiều lắm
+</header>
+
+<section id="loginSection">
+  <input type="password" id="passwordInput" placeholder="Nhập mật khẩu..." />
+  <br />
+  <button onclick="checkPassword()">Xác nhận</button>
+  <p id="errorMsg" style="color:#ff1a75; display:none; margin-top:10px;">Mật khẩu sai, thử lại nhé!</p>
+</section>
+
+<section id="content">
+  <h2>Kỷ niệm đẹp của chúng ta</h2>
+  
+  <!-- Ảnh bạn muốn hiển thị, đổi src thành ảnh của bạn -->
+  <img src="https://i.imgur.com/J6a2Ozp.jpg" alt="Ảnh kỷ niệm" />
+  
+  <!-- Video bạn muốn hiển thị, đổi src thành video của bạn -->
+  <video controls>
+    <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm" />
+    Trình duyệt không hỗ trợ video.
+  </video>
+</section>
+
+<footer>
+  Made with ❤️ by Trongle36
+</footer>
+
+<script>
+  function checkPassword() {
+    const pwInput = document.getElementById('passwordInput').value;
+    const errorMsg = document.getElementById('errorMsg');
+    const content = document.getElementById('content');
+    if (pwInput === 'trongleyeuboongsu') {
+      content.style.display = 'block';
+      errorMsg.style.display = 'none';
+      document.getElementById('loginSection').style.display = 'none';
+    } else {
+      errorMsg.style.display = 'block';
+      content.style.display = 'none';
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
