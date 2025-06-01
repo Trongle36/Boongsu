@@ -1,47 +1,284 @@
-function handleUpload() {
-  const files = fileInput.files;
-  if(files.length === 0) {
-    alert('Bạn chưa chọn file để upload!');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Boongsu Gallery with Firebase</title>
+<style>
+  /* Nền hồng gradient, font dễ thương */
+  body {
+    background: linear-gradient(135deg, #ff99cc, #ff3399);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    text-align: center;
+    margin: 0; padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+  }
+  #login-form, #gallery, #upload-section {
+    max-width: 600px;
+    margin: 10px auto;
+    padding: 15px;
+    background: #ff4da6cc;
+    border-radius: 20px;
+    box-shadow: 0 0 30px #ff1a75cc;
+  }
+  input, button {
+    padding: 10px;
+    font-size: 1.2rem;
+    margin: 5px;
+    border-radius: 12px;
+    border: none;
+  }
+  button {
+    cursor: pointer;
+    background-color: #ff0066;
+    color: white;
+    font-weight: bold;
+  }
+  button:hover {
+    background-color: #cc0052;
+  }
+  #gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .media-item {
+    position: relative;
+    margin: 10px;
+  }
+  .media-item img, .media-item video {
+    max-width: 250px;
+    max-height: 160px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px #ff4da6aa;
+    object-fit: cover;
+  }
+  .delete-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: #ff4d6dcc;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-weight: 900;
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    opacity: 0.85;
+    z-index: 10;
+  }
+  #logout-btn {
+    margin-top: 15px;
+    background-color: #cc0033;
+  }
+  #logout-btn:hover {
+    background-color: #990022;
+  }
+  #login-msg, #upload-msg {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<h1>Bống ơi, anh yêu em nhiều lắm 💖</h1>
+
+<div id="login-form">
+  <h2>Đăng nhập</h2>
+  <input type="email" id="email" placeholder="Email" /><br/>
+  <input type="password" id="password" placeholder="Mật khẩu" /><br/>
+  <button onclick="login()">Đăng nhập</button>
+  <button onclick="signup()">Đăng ký</button>
+  <p id="login-msg"></p>
+</div>
+
+<div id="upload-section" style="display:none;">
+  <h2>Upload ảnh/video mới</h2>
+  <input type="file" id="fileInput" multiple accept="image/*,video/*" /><br/>
+  <button onclick="uploadFiles()">Upload</button>
+  <button id="logout-btn" onclick="logout()">Đăng xuất</button>
+  <p id="upload-msg"></p>
+</div>
+
+<div id="gallery"></div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+// Thay bằng config Firebase của bạn bên dưới nhé:
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY_HERE",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Khởi tạo Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const storage = firebase.storage();
+const db = firebase.firestore();
+
+const loginForm = document.getElementById('login-form');
+const uploadSection = document.getElementById('upload-section');
+const gallery = document.getElementById('gallery');
+const loginMsg = document.getElementById('login-msg');
+const uploadMsg = document.getElementById('upload-msg');
+
+auth.onAuthStateChanged(user => {
+  if(user) {
+    loginForm.style.display = 'none';
+    uploadSection.style.display = 'block';
+    loadGallery(user.uid);
+  } else {
+    loginForm.style.display = 'block';
+    uploadSection.style.display = 'none';
+    gallery.innerHTML = '';
+  }
+});
+
+// Đăng nhập
+function login() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  loginMsg.textContent = '';
+  if(!email || !password) {
+    loginMsg.textContent = 'Vui lòng nhập email và mật khẩu!';
     return;
   }
-  for(let file of files) {
-    const url = URL.createObjectURL(file);
-    let element;
-    if(file.type.startsWith('image/')) {
-      element = document.createElement('img');
-      element.src = url;
-      element.alt = file.name;
-    } else if(file.type.startsWith('video/')) {
-      element = document.createElement('video');
-      element.controls = true;
-      const source = document.createElement('source');
-      source.src = url;
-      source.type = file.type;
-      element.appendChild(source);
-    } else {
-      alert('Chỉ hỗ trợ upload ảnh và video thôi nhé!');
-      continue;
-    }
-    element.style.maxWidth = '260px';
-    element.style.maxHeight = '180px';
-    element.style.borderRadius = '20px';
-    element.style.boxShadow = '0 0 20px #ff4da6aa';
-    element.style.objectFit = 'cover';
-
-    // Tạo div bao bọc element và nút xóa
-    const mediaDiv = document.createElement('div');
-    mediaDiv.className = 'media-item';
-    mediaDiv.appendChild(element);
-
-    const delBtn = document.createElement('button');
-    delBtn.className = 'delete-btn';
-    delBtn.textContent = '❌';
-    delBtn.onclick = function() {
-      mediaDiv.remove();
-    };
-
-    mediaDiv.appendChild(delBtn);
-    gallery.appendChild(mediaDiv);
-  }
-  fileInput.value = ''; // reset input
+  auth.signInWithEmailAndPassword(email, password)
+  .catch(e => {
+    loginMsg.textContent = 'Lỗi đăng nhập: ' + e.message;
+  });
 }
+
+// Đăng ký
+function signup() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  loginMsg.textContent = '';
+  if(!email || !password) {
+    loginMsg.textContent = 'Vui lòng nhập email và mật khẩu!';
+    return;
+  }
+  auth.createUserWithEmailAndPassword(email, password)
+  .catch(e => {
+    loginMsg.textContent = 'Lỗi đăng ký: ' + e.message;
+  });
+}
+
+// Đăng xuất
+function logout() {
+  auth.signOut();
+}
+
+// Upload file
+async function uploadFiles() {
+  const files = document.getElementById('fileInput').files;
+  if(files.length === 0) {
+    uploadMsg.textContent = 'Bạn chưa chọn file!';
+    return;
+  }
+  uploadMsg.textContent = 'Đang upload...';
+  const user = auth.currentUser;
+  for(let file of files) {
+    const storageRef = storage.ref().child(`gallery/${user.uid}/${Date.now()}_${file.name}`);
+    try {
+      await storageRef.put(file);
+      const url = await storageRef.getDownloadURL();
+      // Lưu metadata vào Firestore
+      await db.collection('gallery').add({
+        uid: user.uid,
+        url: url,
+        name: file.name,
+        type: file.type,
+        timestamp: Date.now()
+      });
+    } catch(e) {
+      uploadMsg.textContent = 'Lỗi upload: ' + e.message;
+      return;
+    }
+  }
+  uploadMsg.textContent = 'Upload xong!';
+  document.getElementById('fileInput').value = '';
+  loadGallery(user.uid);
+}
+
+// Load gallery của user
+async function loadGallery(uid) {
+  gallery.innerHTML = '<p>Đang tải ảnh/video...</p>';
+  try {
+    const snapshot = await db.collection('gallery')
+      .where('uid', '==', uid)
+      .orderBy('timestamp', 'desc')
+      .get();
+    if(snapshot.empty) {
+      gallery.innerHTML = '<p>Chưa có ảnh/video nào.</p>';
+      return;
+    }
+    gallery.innerHTML = '';
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const mediaDiv = document.createElement('div');
+      mediaDiv.className = 'media-item';
+
+      let mediaElement;
+      if(data.type.startsWith('image/')) {
+        mediaElement = document.createElement('img');
+        mediaElement.src = data.url;
+        mediaElement.alt = data.name;
+      } else if(data.type.startsWith('video/')) {
+        mediaElement = document.createElement('video');
+        mediaElement.controls = true;
+        const source = document.createElement('source');
+        source.src = data.url;
+        source.type = data.type;
+        mediaElement.appendChild(source);
+      }
+
+      mediaDiv.appendChild(mediaElement);
+
+      // Nút xóa
+      const delBtn = document.createElement('button');
+      delBtn.className = 'delete-btn';
+      delBtn.textContent = '❌';
+      delBtn.onclick = async () => {
+        if(confirm('Bạn có chắc muốn xóa ảnh/video này không?')) {
+          try {
+            const fileRef = storage.refFromURL(data.url);
+            await fileRef.delete();
+            await db.collection('gallery').doc(doc.id).delete();
+            mediaDiv.remove();
+          } catch(e) {
+            alert('Lỗi xóa: ' + e.message);
+          }
+        }
+      };
+      mediaDiv.appendChild(delBtn);
+
+      gallery.appendChild(mediaDiv);
+    });
+  } catch(e) {
+    gallery.innerHTML = '<p>Lỗi tải gallery: ' + e.message + '</p>';
+  }
+}
+</script>
+
+</body>
+</html>
