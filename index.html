@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bống ơi, anh yêu em nhiều lắm</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff0f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      color: #e75480;
+    }
+    input[type="password"] {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid pink;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #e75480;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Nhập mật khẩu để xem điều đặc biệt 💖</h1>
+  <input type="password" id="password" placeholder="Nhập mật khẩu..." />
+  <button onclick="checkPassword()">Vào xem</button>
+
+  <script>
+    function checkPassword() {
+      var pw = document.getElementById("password").value;
+      if (pw === "trongleyeuboongsu") {
+        window.location.href = "memory.html";
+      } else {
+        alert("Sai mật khẩu rồi Bống ơi 😢");
+      }
+    }
+  </script>
+</body>
+</html>
