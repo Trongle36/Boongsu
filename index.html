@@ -5,109 +5,167 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Bống ơi, anh yêu em nhiều lắm</title>
 <style>
-  body {
-    background: linear-gradient(135deg, #f5c6e0, #fff0f5);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+  /* Toàn màn hình, nền gradient hồng dễ thương */
+  html, body {
+    height: 100%;
     margin: 0; padding: 0;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(135deg, #ffcee4, #ff96c5);
+    overflow-x: hidden;
   }
   header {
-    background: #ff8fc3;
-    padding: 20px;
-    text-align: center;
+    background: #ff4da6;
     color: white;
-    font-weight: 700;
-    font-size: 2em;
-    letter-spacing: 2px;
-    box-shadow: 0 4px 8px rgba(255, 143, 195, 0.5);
+    text-align: center;
+    font-size: 3em;
+    padding: 30px 10px;
+    letter-spacing: 3px;
+    font-weight: 900;
+    text-shadow: 0 0 10px #ff1a75;
+    user-select: none;
   }
   #loginSection {
-    margin: 40px auto;
+    margin: 50px auto;
     max-width: 400px;
     text-align: center;
   }
   #loginSection input[type="password"] {
-    padding: 12px 20px;
-    font-size: 1em;
-    border-radius: 25px;
-    border: 2px solid #ff8fc3;
+    padding: 15px 20px;
+    font-size: 1.2em;
+    border-radius: 40px;
+    border: 3px solid #ff4da6;
     outline: none;
-    width: 80%;
+    width: 90%;
     box-sizing: border-box;
     transition: border-color 0.3s ease;
   }
   #loginSection input[type="password"]:focus {
-    border-color: #ff4da6;
+    border-color: #ff1a75;
   }
   #loginSection button {
-    margin-top: 15px;
-    padding: 12px 30px;
+    margin-top: 20px;
+    padding: 15px 40px;
     border: none;
-    background: #ff4da6;
+    background: #ff1a75;
     color: white;
-    font-weight: 600;
-    border-radius: 25px;
+    font-weight: 800;
+    border-radius: 40px;
     cursor: pointer;
+    font-size: 1.2em;
+    box-shadow: 0 0 15px #ff4da6;
     transition: background 0.3s ease;
   }
   #loginSection button:hover {
-    background: #ff1a75;
+    background: #e6005c;
+  }
+  #errorMsg {
+    color: #ff1a75;
+    margin-top: 15px;
+    font-weight: 700;
+    display: none;
   }
   #content {
     display: none;
-    max-width: 800px;
-    margin: 40px auto;
+    max-width: 900px;
+    margin: 40px auto 80px;
+    padding: 20px;
+    background: #ffe0f0cc;
+    border-radius: 30px;
+    box-shadow: 0 0 40px #ff4da6cc;
     text-align: center;
   }
   #content h2 {
-    color: #d6336c;
-    margin-bottom: 20px;
+    font-size: 2.5em;
+    color: #d6004d;
+    margin-bottom: 25px;
+    text-shadow: 0 0 8px #ff1a75;
   }
-  #content img {
-    max-width: 90%;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(255, 143, 195, 0.5);
-    margin-bottom: 20px;
+  #gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
   }
-  #content video {
-    max-width: 90%;
+  #gallery img, #gallery video {
+    max-width: 260px;
+    max-height: 180px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px #ff4da6aa;
+    object-fit: cover;
+  }
+  #uploadSection {
+    margin-top: 30px;
+    text-align: center;
+  }
+  #uploadSection label {
+    font-weight: 700;
+    font-size: 1.2em;
+    color: #d6004d;
+    display: block;
+    margin-bottom: 10px;
+  }
+  #uploadSection input[type="file"] {
     border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(255, 143, 195, 0.5);
-    margin-bottom: 20px;
+    padding: 8px 12px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+  #uploadSection button {
+    margin-top: 15px;
+    padding: 12px 35px;
+    font-size: 1.1em;
+    background: #ff4da6;
+    color: white;
+    font-weight: 700;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #ff1a75;
+    transition: background 0.3s ease;
+  }
+  #uploadSection button:hover {
+    background: #e6005c;
   }
   footer {
     text-align: center;
-    color: #ff4da6;
-    font-weight: 600;
-    padding: 20px;
-    margin-top: 50px;
+    color: #d6004d;
+    font-weight: 700;
+    font-size: 1em;
+    padding: 20px 0 40px;
+    user-select: none;
   }
 </style>
 </head>
 <body>
 
 <header>
-  Bống ơi, anh yêu em nhiều lắm
+  Bống ơi, anh yêu em nhiều lắm 💖
 </header>
 
 <section id="loginSection">
   <input type="password" id="passwordInput" placeholder="Nhập mật khẩu..." />
   <br />
   <button onclick="checkPassword()">Xác nhận</button>
-  <p id="errorMsg" style="color:#ff1a75; display:none; margin-top:10px;">Mật khẩu sai, thử lại nhé!</p>
+  <p id="errorMsg">Mật khẩu sai, thử lại nhé!</p>
 </section>
 
 <section id="content">
   <h2>Kỷ niệm đẹp của chúng ta</h2>
-  
-  <!-- Ảnh bạn muốn hiển thị, đổi src thành ảnh của bạn -->
-  <img src="https://i.imgur.com/J6a2Ozp.jpg" alt="Ảnh kỷ niệm" />
-  
-  <!-- Video bạn muốn hiển thị, đổi src thành video của bạn -->
-  <video controls>
-    <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm" />
-    Trình duyệt không hỗ trợ video.
-  </video>
+  <div id="gallery">
+    <!-- Ảnh và video mẫu có sẵn -->
+    <img src="https://i.imgur.com/J6a2Ozp.jpg" alt="Ảnh kỷ niệm" />
+    <video controls>
+      <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm" />
+      Trình duyệt không hỗ trợ video.
+    </video>
+  </div>
+
+  <div id="uploadSection">
+    <label for="fileInput">Thêm ảnh hoặc video mới:</label>
+    <input type="file" id="fileInput" accept="image/*,video/*" multiple />
+    <br />
+    <button onclick="handleUpload()">Upload</button>
+  </div>
 </section>
 
 <footer>
@@ -115,18 +173,55 @@
 </footer>
 
 <script>
+  const passwordCorrect = 'trongleyeuboongsu';
+  const loginSection = document.getElementById('loginSection');
+  const content = document.getElementById('content');
+  const errorMsg = document.getElementById('errorMsg');
+  const gallery = document.getElementById('gallery');
+  const fileInput = document.getElementById('fileInput');
+
   function checkPassword() {
     const pwInput = document.getElementById('passwordInput').value;
-    const errorMsg = document.getElementById('errorMsg');
-    const content = document.getElementById('content');
-    if (pwInput === 'trongleyeuboongsu') {
+    if(pwInput === passwordCorrect) {
       content.style.display = 'block';
+      loginSection.style.display = 'none';
       errorMsg.style.display = 'none';
-      document.getElementById('loginSection').style.display = 'none';
     } else {
       errorMsg.style.display = 'block';
-      content.style.display = 'none';
     }
+  }
+
+  function handleUpload() {
+    const files = fileInput.files;
+    if(files.length === 0) {
+      alert('Bạn chưa chọn file để upload!');
+      return;
+    }
+    for(let file of files) {
+      const url = URL.createObjectURL(file);
+      let element;
+      if(file.type.startsWith('image/')) {
+        element = document.createElement('img');
+        element.src = url;
+        element.alt = file.name;
+      } else if(file.type.startsWith('video/')) {
+        element = document.createElement('video');
+        element.controls = true;
+        const source = document.createElement('source');
+        source.src = url;
+        source.type = file.type;
+        element.appendChild(source);
+      } else {
+        alert('Chỉ hỗ trợ upload ảnh và video thôi nhé!');
+        continue;
+      }
+      element.style.maxWidth = '260px';
+      element.style.maxHeight = '180px';
+      element.style.borderRadius = '20px';
+      element.style.boxShadow = '0 0 20px #ff4da6aa';
+      gallery.appendChild(element);
+    }
+    fileInput.value = ''; // reset input
   }
 </script>
 
